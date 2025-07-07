@@ -56,11 +56,11 @@ module.exports = (sequelize , DataTypes ) =>{
         }
        },
 
-       VAT:{
+       vat:{
         type:DataTypes.STRING
        },
        
-       PAN:{
+       pan:{
         type:DataTypes.STRING
        },
 
@@ -94,6 +94,9 @@ module.exports = (sequelize , DataTypes ) =>{
         pdfName:{
             type:DataTypes.STRING,
             
+        },
+        description:{
+            type:DataTypes.TEXT,
         }
 
     })

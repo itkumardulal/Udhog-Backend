@@ -17,6 +17,7 @@ const addCompanyDetails = async (req, res) => {
     pan,
     pdfUrl,
     pdfName,
+    description
   } = req.body;
 
   if (
@@ -45,10 +46,11 @@ const addCompanyDetails = async (req, res) => {
     numberOfEmployees,
     annualRevenue,
     renewStatus,
-    VAT,
-    PAN,
+    vat:VAT,
+    pan:PAN,
     pdfUrl,
     pdfName,
+    description
   });
 
   return res.status(201).json({
@@ -56,7 +58,7 @@ const addCompanyDetails = async (req, res) => {
   });
 };
 
-const fetchComapanyDetails = async (req,res) =>{
+const fetchCompanyDetails = async (req,res) =>{
     const data = await companies.findAll()
     return res.status(200).json({
         message:'companies data fetched successfully',
@@ -65,37 +67,61 @@ const fetchComapanyDetails = async (req,res) =>{
 }
 
 const updateCompanyDetails = async (req,res) =>{
-
 const {id} = req.params
-const {organizationId,registrationNo,companyNameEng,companyNameNep,email,organizationType,industry,contactPerson,phoneNo,  numberOfEmployees,renewStatus, annualRevenue} = req.body
-if(!organizationId || !registrationNo || !companyNameEng || !companyNameNep || !email || !organizationType || !industry || !contactPerson || !phoneNo || !numberOfEmployees || !renewStatus || ! annualRevenue) {
+ const {
+    registrationNo,
+    companyNameEng,
+    companyNameNep,
+    email,
+    organizationType,
+    industry,
+    contactPerson,
+    phoneNo,
+    numberOfEmployees,
+    renewStatus,
+    annualRevenue,
+    vat,
+    pan,
+    pdfUrl,
+    pdfName,
+    description
+  } = req.body;
+  
+  if (
+    !registrationNo || !companyNameEng || !companyNameNep || !email ||
+    !organizationType || !industry || !contactPerson || !phoneNo ||
+    !numberOfEmployees || !renewStatus || !annualRevenue || (!vat && !pan)
+  ) {
     return res.status(400).json({
-        message:"please provide the above details"
-    })
-}
-const vat = req.body.VAT || null
-const pan = req.body.PAN || null
+      message: "Please provide all required fields, including either VAT or PAN.",
+    });
+  }
+
+ 
+  const VAT = vat || null;
+  const PAN = vat ? null : pan;
 
  await companies.update({
-organizationId,
-registrationNo,
-companyNameEng,
-companyNameNep,
-email,
-organizationType,
-industry,
-contactPerson,
-phoneNo,
-VAT:vat,
-PAN:pan,
-numberOfEmployees,
-annualRevenue,
-renewStatus
-},{
-    where:{
-        id
-    }
-})
+  registrationNo,
+  companyNameEng,
+  companyNameNep,
+  email,
+  organizationType,
+  industry,
+  contactPerson,
+  phoneNo,
+  numberOfEmployees,
+  annualRevenue,
+  renewStatus,
+  vat: VAT,
+  pan: PAN,
+  pdfUrl,
+  pdfName,
+  description
+}, {
+  where: { id }
+});
+
 
 const data =  await companies.findByPk(id)
 
@@ -135,4 +161,4 @@ const fetchSingleCompanyDetails = async (req, res) => {
 }
 
 
-module.exports = {addCompanyDetails,fetchComapanyDetails,updateCompanyDetails,deleteCompanyDetails,fetchSingleCompanyDetails}
+module.exports = {addCompanyDetails,fetchCompanyDetails,updateCompanyDetails,deleteCompanyDetails,fetchSingleCompanyDetails}
