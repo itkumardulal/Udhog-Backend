@@ -4,7 +4,7 @@ const { notices } = require("../database/connection")
 const addNotice = async (req,res) =>{
 
     const {title,description,pdfUrl,pdfName} =req.body
-    if(!title || !description || !pdfUrl || !pdfName) {
+    if(!title || !description ) {
         return res.status(400).json({
             message:'please provide above details'
         })
@@ -16,7 +16,7 @@ const addNotice = async (req,res) =>{
         pdfName
     })
 
-    return res.status(400).json({
+    return res.status(201).json({
         message:'notice added successfully'
     })
 }
@@ -32,7 +32,7 @@ return res.status(200).json({
 const updateNotice = async (req,res) =>{
   
     const {id} = req.params
-    const {title,description} = req.body
+    const {title,description,pdfUrl,pdfName } = req.body
     if(!title || !description) {
         return res.status(400).json({
             message:'please provide above description'
@@ -40,7 +40,9 @@ const updateNotice = async (req,res) =>{
     }
     const data = await notices.update ({
         title,
-        description
+        description,
+        pdfUrl,
+        pdfName
     },{
         where:{
             id

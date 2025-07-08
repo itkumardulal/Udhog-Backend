@@ -1,9 +1,9 @@
 const { news } = require("../database/connection");
 
 const addNews = async (req, res) => {
-  const { title, description, imgUrl } = req.body;
+  const { title, description, imgUrl, imgName } = req.body;
 
-  if (!title || !description || !imgUrl || !imgName) {
+  if (!title || !description ) {
     return res.status(400).json({
       message: "Please provide all required fields",
     });
@@ -12,8 +12,8 @@ const addNews = async (req, res) => {
   await news.create({
     title,
     description,
-    fileUrl,
-    imgName
+    imgName,
+    imgUrl
   });
 
   return res.status(201).json({
@@ -44,7 +44,7 @@ const fetchSingleNews = async (req, res) => {
 
 const updateNews = async (req, res) => {
   const { id } = req.params;
-  const { title, description } = req.body;
+  const { title, description,imgName,imgUrl } = req.body;
 
   if (!title || !description) {
     return res.status(400).json({
@@ -52,20 +52,17 @@ const updateNews = async (req, res) => {
     });
   }
 
-  const [rowsAffected] = await news.update(
+  await news.update(
     {
       title,
       description,
-  
+      imgName,
+      imgUrl
     },
     {
       where: { id },
     }
   );
-
-  if (rowsAffected === 0) {
-    return res.status(404).json({ message: "News not found" });
-  }
 
   return res.status(200).json({
     message: "News updated successfully",

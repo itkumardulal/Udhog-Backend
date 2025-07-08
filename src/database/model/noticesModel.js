@@ -17,11 +17,11 @@ module.exports = (sequelize , DataTypes ) => {
 
         pdfUrl:{
             type:DataTypes.STRING,
-            allowNull:false
+            
         },
         pdfName:{
             type:DataTypes.STRING,
-            allowNull:false
+            
         }
     })
 
