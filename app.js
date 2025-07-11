@@ -10,7 +10,7 @@ app.use(
   })
 );
 
-adminSeeder()
+adminSeeder() 
 
 const authRoute = require("./src/routes/authRoutes");
 const companyRoute = require("./src/routes/companyRoute");

@@ -13,6 +13,12 @@ module.exports = (sequelize , DataTypes ) =>{
         unique:true
        },
 
+       membershipNo:{
+        type:DataTypes.STRING,
+        allowNull:false,
+        unique:true 
+         },
+
        companyNameEng:{
         type:DataTypes.STRING,
         allowNull:false,
@@ -97,7 +103,19 @@ module.exports = (sequelize , DataTypes ) =>{
         },
         description:{
             type:DataTypes.TEXT,
-        }
+        },
+
+        registrationDate:{
+            type:DataTypes.DATE,
+            allowNull:false,
+           
+        },  
+
+        membershipDate: {
+            type: DataTypes.DATE,
+            allowNull: false,
+           
+        },
 
     })
     return Company
