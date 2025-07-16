@@ -37,9 +37,9 @@ db.companies = require("./model/companyModel")(sequelize, DataTypes);
 db.notices = require("./model/noticesModel")(sequelize, DataTypes);
 db.news = require("./model/newsModel")(sequelize, DataTypes);
 
-// db.sequelize.sync({ force: false }).then(() => {
-//   console.log("migrated successfully");
-// });
+db.sequelize.sync({ force: false }).then(() => {
+  console.log("migrated successfully");
+});
 
 module.exports = db;
   
