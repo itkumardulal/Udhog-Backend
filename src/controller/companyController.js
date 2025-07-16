@@ -32,7 +32,7 @@ const addCompanyDetails = async (req, res) => {
     citizenshipBackName,
     photoUrl,
     photoName,
-    leadershipGender
+    leadershipGender,
   } = req.body;
 
   if (
@@ -96,7 +96,7 @@ const addCompanyDetails = async (req, res) => {
     citizenshipBackName,
     photoUrl,
     photoName,
-    leadershipGender
+    leadershipGender,
   });
 
   return res.status(201).json({
@@ -144,7 +144,7 @@ const updateCompanyDetails = async (req, res) => {
     citizenshipBackName,
     photoUrl,
     photoName,
-    leadershipGender
+    leadershipGender,
   } = req.body;
 
   if (
@@ -209,7 +209,7 @@ const updateCompanyDetails = async (req, res) => {
       citizenshipBackName,
       photoUrl,
       photoName,
-      leadershipGender
+      leadershipGender,
     },
     {
       where: { id },
