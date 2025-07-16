@@ -4,42 +4,58 @@ const { companies } = require("../database/connection");
 const addCompanyDetails = async (req, res) => {
   const {
     registrationNo,
+    membershipNo,
     companyNameEng,
     companyNameNep,
     email,
     organizationType,
-    industry,
+    industryType,
     contactPerson,
     phoneNo,
     numberOfEmployees,
     renewStatus,
-    annualRevenue,
+    capital,
     vat,
     pan,
-    pdfUrl,
-    pdfName,
     description,
     registrationDate,
+    address,
+    telPhone,
     membershipDate,
-    membershipNo,
+    membershipType,
+    businessNature,
+    registrationUrl,
+    registrationName,
+    citizenshipFrontUrl,
+    citizenshipFrontName,
+    citizenshipBackUrl,
+    citizenshipBackName,
+    photoUrl,
+    photoName,
+    leadershipGender
   } = req.body;
 
   if (
     !registrationNo ||
+    !membershipNo ||
     !companyNameEng ||
     !companyNameNep ||
     !email ||
     !organizationType ||
-    !industry ||
+    !industryType ||
     !contactPerson ||
     !phoneNo ||
     !numberOfEmployees ||
     !renewStatus ||
-    !annualRevenue ||
+    !capital ||
     (!vat && !pan) ||
-    !membershipNo ||
     !registrationDate ||
-    !membershipDate
+    !address ||
+    !telPhone ||
+    !membershipDate ||
+    !membershipType ||
+    !businessNature ||
+    !leadershipGender
   ) {
     return res.status(400).json({
       message:
@@ -52,24 +68,35 @@ const addCompanyDetails = async (req, res) => {
 
   await companies.create({
     registrationNo,
+    membershipNo,
     companyNameEng,
     companyNameNep,
     email,
     organizationType,
-    industry,
+    industryType,
     contactPerson,
     phoneNo,
     numberOfEmployees,
-    annualRevenue,
     renewStatus,
+    capital,
     vat: VAT,
     pan: PAN,
-    pdfUrl,
-    pdfName,
     description,
     registrationDate,
+    address,
+    telPhone,
     membershipDate,
-    membershipNo,
+    membershipType,
+    businessNature,
+    registrationUrl,
+    registrationName,
+    citizenshipFrontUrl,
+    citizenshipFrontName,
+    citizenshipBackUrl,
+    citizenshipBackName,
+    photoUrl,
+    photoName,
+    leadershipGender
   });
 
   return res.status(201).json({
@@ -80,7 +107,7 @@ const addCompanyDetails = async (req, res) => {
 const fetchCompanyDetails = async (req, res) => {
   const data = await companies.findAll();
   return res.status(200).json({
-    message: "companies data fetched successfully",
+    message: "Companies data fetched successfully",
     data,
   });
 };
@@ -89,42 +116,58 @@ const updateCompanyDetails = async (req, res) => {
   const { id } = req.params;
   const {
     registrationNo,
+    membershipNo,
     companyNameEng,
     companyNameNep,
     email,
     organizationType,
-    industry,
+    industryType,
     contactPerson,
     phoneNo,
     numberOfEmployees,
     renewStatus,
-    annualRevenue,
+    capital,
     vat,
     pan,
-    pdfUrl,
-    pdfName,
     description,
     registrationDate,
+    address,
+    telPhone,
     membershipDate,
-    membershipNo,
+    membershipType,
+    businessNature,
+    registrationUrl,
+    registrationName,
+    citizenshipFrontUrl,
+    citizenshipFrontName,
+    citizenshipBackUrl,
+    citizenshipBackName,
+    photoUrl,
+    photoName,
+    leadershipGender
   } = req.body;
 
   if (
     !registrationNo ||
+    !membershipNo ||
     !companyNameEng ||
     !companyNameNep ||
     !email ||
     !organizationType ||
-    !industry ||
+    !industryType ||
     !contactPerson ||
     !phoneNo ||
     !numberOfEmployees ||
     !renewStatus ||
-    !annualRevenue ||
+    !capital ||
     (!vat && !pan) ||
-    !membershipNo ||
     !registrationDate ||
-    !membershipDate
+    !address ||
+    !telPhone ||
+    !membershipDate ||
+    !membershipType ||
+    !businessNature ||
+    !leadershipGender
   ) {
     return res.status(400).json({
       message:
@@ -135,51 +178,68 @@ const updateCompanyDetails = async (req, res) => {
   const VAT = vat || null;
   const PAN = vat ? null : pan;
 
-  await companies.update(
+  const [updated] = await companies.update(
     {
       registrationNo,
+      membershipNo,
       companyNameEng,
       companyNameNep,
       email,
       organizationType,
-      industry,
+      industryType,
       contactPerson,
       phoneNo,
       numberOfEmployees,
-      annualRevenue,
       renewStatus,
+      capital,
       vat: VAT,
       pan: PAN,
-      pdfUrl,
-      pdfName,
       description,
       registrationDate,
+      address,
+      telPhone,
       membershipDate,
-      membershipNo,
+      membershipType,
+      businessNature,
+      registrationUrl,
+      registrationName,
+      citizenshipFrontUrl,
+      citizenshipFrontName,
+      citizenshipBackUrl,
+      citizenshipBackName,
+      photoUrl,
+      photoName,
+      leadershipGender
     },
     {
       where: { id },
     }
   );
 
+  if (updated === 0) {
+    return res.status(404).json({ message: "Company not found" });
+  }
+
   const data = await companies.findByPk(id);
 
   return res.status(200).json({
-    message: "details of companies updated successfully",
+    message: "Company details updated successfully",
     data,
   });
 };
 
 const deleteCompanyDetails = async (req, res) => {
   const { id } = req.params;
-  await companies.destroy({
-    where: {
-      id,
-    },
+  const deleted = await companies.destroy({
+    where: { id },
   });
 
+  if (deleted === 0) {
+    return res.status(404).json({ message: "Company not found" });
+  }
+
   return res.status(200).json({
-    message: "company deleted successfully",
+    message: "Company deleted successfully",
   });
 };
 
@@ -192,25 +252,19 @@ const searchCompanyByName = async (req, res) => {
     });
   }
 
-  try {
-    const data = await companies.findAll({
-      where: Sequelize.where(
-        Sequelize.fn('LOWER', Sequelize.col('companyNameEng')),
-        {
-          [Op.like]: `%${q.toLowerCase()}%`
-        }
-      )
-    });
+  const data = await companies.findAll({
+    where: Sequelize.where(
+      Sequelize.fn("LOWER", Sequelize.col("companyNameEng")),
+      {
+        [Op.like]: `%${q.toLowerCase()}%`,
+      }
+    ),
+  });
 
-    if (!data || data.length === 0) {
-      return res.status(200).json([]);
-    }
-
-    return res.status(200).json(data);
-  } catch (error) {
-    console.error("Error searching company by name:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
-  }
+  return res.status(200).json({
+    message: "Search results",
+    data,
+  });
 };
 
 const fetchSingleCompanyDetails = async (req, res) => {
@@ -235,5 +289,5 @@ module.exports = {
   updateCompanyDetails,
   deleteCompanyDetails,
   fetchSingleCompanyDetails,
-  searchCompanyByName
+  searchCompanyByName,
 };

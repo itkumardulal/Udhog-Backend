@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { secretConfig } = require('../config/config')
 const { users } = require('../database/connection')
+
 const isLogin = async (req ,res) =>{
     if(!req.body){
         return res.status(400).json({
@@ -34,7 +35,7 @@ const isLogin = async (req ,res) =>{
     }
 
     const token = jwt.sign({id:data.id},secretConfig.secretKey, {
-        expiresIn:'7d'
+        expiresIn:'1h'
     })
 
     return res.status(200).json({
@@ -43,4 +44,11 @@ const isLogin = async (req ,res) =>{
     })
 }
 
-module.exports = isLogin
+const verifyToken = (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Token is valid",
+  });
+};
+
+module.exports = { isLogin, verifyToken }
