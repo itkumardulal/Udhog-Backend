@@ -36,30 +36,13 @@ const addCompanyDetails = async (req, res) => {
   } = req.body;
 
   if (
-    !registrationNo ||
-    !membershipNo ||
     !companyNameEng ||
-    !companyNameNep ||
-    !email ||
-    !organizationType ||
-    !industryType ||
     !contactPerson ||
-    !phoneNo ||
-    !numberOfEmployees ||
-    !renewStatus ||
-    !capital ||
-    (!vat && !pan) ||
-    !registrationDate ||
-    !address ||
-    !telPhone ||
-    !membershipDate ||
-    !membershipType ||
-    !businessNature ||
-    !leadershipGender
+    !address
   ) {
     return res.status(400).json({
       message:
-        "Please provide all required fields, including either VAT or PAN.",
+        "Please provide all required fields"
     });
   }
 
@@ -103,6 +86,30 @@ const addCompanyDetails = async (req, res) => {
     message: "Company details added successfully",
   });
 };
+
+const fetchCompanyLimitedData = async (req, res) => {
+  const data = await companies.findAll();
+  const limitedData = data.map((company) => ({
+    membershipNo: company.membershipNo,
+    registrationNo: company.registrationNo,
+    companyNameEng: company. companyNameEng,
+    email:company.email,
+    address: company.address,
+    organizationType: company.organizationType,
+    industryType: company.industryType,
+    contactPerson: company.contactPerson,
+    phoneNo: company.phoneNo,
+    vat: company.vat,
+    pan: company.pan,
+    numberOfEmployees: company.numberOfEmployees,
+    renewStatus: company.renewStatus,
+  }));
+  res.status(200).json({
+    message: " companies data fetched successfully",
+    data: limitedData,
+  });
+};
+
 
 const fetchCompanyDetails = async (req, res) => {
   const data = await companies.findAll();
@@ -148,26 +155,9 @@ const updateCompanyDetails = async (req, res) => {
   } = req.body;
 
   if (
-    !registrationNo ||
-    !membershipNo ||
     !companyNameEng ||
-    !companyNameNep ||
-    !email ||
-    !organizationType ||
-    !industryType ||
     !contactPerson ||
-    !phoneNo ||
-    !numberOfEmployees ||
-    !renewStatus ||
-    !capital ||
-    (!vat && !pan) ||
-    !registrationDate ||
-    !address ||
-    !telPhone ||
-    !membershipDate ||
-    !membershipType ||
-    !businessNature ||
-    !leadershipGender
+    !address
   ) {
     return res.status(400).json({
       message:
@@ -290,4 +280,5 @@ module.exports = {
   deleteCompanyDetails,
   fetchSingleCompanyDetails,
   searchCompanyByName,
+  fetchCompanyLimitedData
 };

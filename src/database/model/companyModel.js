@@ -8,13 +8,13 @@ module.exports = (sequelize, DataTypes) => {
 
     registrationNo: {
       type: DataTypes.STRING,
-      allowNull: false,
+
       unique: true,
     },
 
     membershipNo: {
       type: DataTypes.STRING,
-      allowNull: false,
+      
       unique: true,
     },
 
@@ -26,36 +26,36 @@ module.exports = (sequelize, DataTypes) => {
 
     companyNameNep: {
       type: DataTypes.STRING,
-      allowNull: false,
+     
       unique: true,
     },
 
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
+      
       unique: true,
     },
 
     organizationType: {
       type: DataTypes.STRING,
-      allowNull: false,
+     
     },
 
     industryType: {
       type: DataTypes.STRING,
-      allowNull: false,
+      
     },
 
     
 
     contactPerson: {
       type: DataTypes.STRING,
-      allowNull: false,
+     
     },
 
     phoneNo: {
       type: DataTypes.STRING(10),
-      allowNull: false,
+    
       unique: false,
       validate: {
         isNumeric: true,
@@ -80,12 +80,12 @@ module.exports = (sequelize, DataTypes) => {
 
     numberOfEmployees: {
       type: DataTypes.STRING,
-      allowNull: false,
+      
     },
 
     renewStatus: {
       type: DataTypes.STRING,
-      allowNull: false,
+     
       validate: {
         isIn: {
           args: [["Active", "Inactive"]],
@@ -100,7 +100,7 @@ module.exports = (sequelize, DataTypes) => {
 
     registrationDate: {
       type: DataTypes.DATE,
-      allowNull: false,
+     
     },
 
     address:{
@@ -110,22 +110,22 @@ module.exports = (sequelize, DataTypes) => {
 
     telPhone:{
       type:DataTypes.STRING,
-      allowNull:false
+      
     },
 
     membershipDate: {
       type: DataTypes.DATE,
-      allowNull: false,
+    
     },
 
     membershipType: {
       type: DataTypes.STRING,
-      allowNull: false,
+      
     },
 
     businessNature: {
       type: DataTypes.STRING,
-      allowNull: false,
+      
     },
 
     registrationUrl: {
