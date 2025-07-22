@@ -27,4 +27,13 @@ const dbConfig = {
     }
 }
 
-module.exports= {envPort,dbConfig,seederConfig,secretConfig}
+const r2Config = {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+    bucket: process.env.R2_BUCKET,
+    endpoint: process.env.R2_ENDPOINT,
+    region: process.env.R2_REGION,
+    publicUrl: process.env.R2_PUBLIC_URL
+}
+
+module.exports= {envPort,dbConfig,seederConfig,secretConfig ,r2Config}

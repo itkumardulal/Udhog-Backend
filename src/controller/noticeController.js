@@ -1,13 +1,23 @@
-const { where } = require("sequelize");
 const { notices } = require("../database/connection");
-
+const uploadToR2 = require("../util/r2Upload");
 const addNotice = async (req, res) => {
-  const { title, description, pdfUrl, pdfName } = req.body;
+  const { title, description } = req.body;
+
   if (!title || !description) {
-    return res.status(400).json({
-      message: "please provide above details",
-    });
+    return res
+      .status(400)
+      .json({ message: "Please provide all required fields" });
   }
+
+  let pdfUrl = null;
+  let pdfName = null;
+
+  if (req.file) {
+    const result = await uploadToR2(req.file);
+    pdfUrl = result.fileUrl;
+    pdfName = result.fileName;
+  }
+
   await notices.create({
     title,
     description,
@@ -15,9 +25,7 @@ const addNotice = async (req, res) => {
     pdfName,
   });
 
-  return res.status(201).json({
-    message: "notice added successfully",
-  });
+  return res.status(201).json({ message: "Notice added successfully" });
 };
 
 const fetchNotice = async (req, res) => {
@@ -30,13 +38,24 @@ const fetchNotice = async (req, res) => {
 
 const updateNotice = async (req, res) => {
   const { id } = req.params;
-  const { title, description, pdfUrl, pdfName } = req.body;
+  const { title, description } = req.body;
+
   if (!title || !description) {
     return res.status(400).json({
-      message: "please provide above description",
+      message: "Please provide title and description",
     });
   }
-  const data = await notices.update(
+
+  let pdfUrl = req.body.pdfUrl || null;
+  let pdfName = req.body.pdfName || null;
+
+  if (req.file) {
+    const result = await uploadToR2(req.file);
+    pdfUrl = result.fileUrl;
+    pdfName = result.fileName;
+  }
+
+  await notices.update(
     {
       title,
       description,
@@ -44,14 +63,12 @@ const updateNotice = async (req, res) => {
       pdfName,
     },
     {
-      where: {
-        id,
-      },
+      where: { id },
     }
   );
+
   return res.status(200).json({
-    message: "notice update successfully",
-    data,
+    message: "Notice updated successfully",
   });
 };
 

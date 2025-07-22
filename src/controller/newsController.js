@@ -1,22 +1,39 @@
 const { news } = require("../database/connection");
+const uploadToR2 = require("../util/r2Upload");
 
 const addNews = async (req, res) => {
-  const { title, description, imgUrl, imgName } = req.body;
+  const { title, description } = req.body;
 
-  if (!title || !description ) {
-    return res.status(400).json({
-      message: "Please provide all required fields",
-    });
+  if (!title || !description) {
+    return res
+      .status(400)
+      .json({ message: "Please provide all required fields" });
+  }
+
+  let imgUrl = null;
+  let imgName = null;
+
+  if (req.file) {
+    // For images
+    if (req.uploadType === "image" && req.file.size > 1024 * 1024) {
+      return res.status(400).json({ message: "Image must be under 1MB" });
+    }
+   
+
+    const result = await uploadToR2(req.file);
+    imgUrl = result.fileUrl;
+    imgName = result.fileName;
   }
 
   await news.create({
     title,
     description,
+    imgUrl,
     imgName,
-    imgUrl
   });
 
-  return res.status(201).json({
+
+return res.status(201).json({
     message: "News added successfully",
   });
 };
@@ -28,7 +45,6 @@ const fetchNews = async (req, res) => {
     data,
   });
 };
-
 
 const fetchSingleNews = async (req, res) => {
   const { id } = req.params;
@@ -44,7 +60,7 @@ const fetchSingleNews = async (req, res) => {
 
 const updateNews = async (req, res) => {
   const { id } = req.params;
-  const { title, description,imgName,imgUrl } = req.body;
+  const { title, description } = req.body;
 
   if (!title || !description) {
     return res.status(400).json({
@@ -52,12 +68,26 @@ const updateNews = async (req, res) => {
     });
   }
 
+  let imgUrl = req.body.imgUrl || null;
+  let imgName = req.body.imgName || null;
+
+  // If a new image file is uploaded
+  if (req.file) {
+    if (req.uploadType === "image" && req.file.size > 1024 * 1024) {
+      return res.status(400).json({ message: "Image must be under 1MB" });
+    }
+
+    const result = await uploadToR2(req.file);
+    imgUrl = result.fileUrl;
+    imgName = result.fileName;
+  }
+
   await news.update(
     {
       title,
       description,
+      imgUrl,
       imgName,
-      imgUrl
     },
     {
       where: { id },

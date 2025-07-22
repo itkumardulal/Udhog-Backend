@@ -55,12 +55,7 @@ module.exports = (sequelize, DataTypes) => {
 
     phoneNo: {
       type: DataTypes.STRING(10),
-    
-      unique: false,
-      validate: {
-        isNumeric: true,
-        len: [10, 10],
-      },
+  
     },
 
     vat: {
@@ -145,6 +140,10 @@ module.exports = (sequelize, DataTypes) => {
     },
 
     citizenshipFrontName: {
+      type: DataTypes.STRING,
+    },
+
+    citizenshipBackName:{
       type: DataTypes.STRING,
     },
 

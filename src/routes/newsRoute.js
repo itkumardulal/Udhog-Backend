@@ -10,17 +10,19 @@ const {
   restrictedTo,
   Roles,
 } = require("../middleware/isAuthenticated");
+const { singleUpload } = require("../middleware/multerConfig");
+
 const catchError = require("../util/catchError");
 
 const router = require("express").Router();
 router
   .route("/news")
   .get(catchError(fetchNews))
-  .post(isAuthenticated, restrictedTo(Roles.Admin), catchError(addNews));
+  .post(isAuthenticated, restrictedTo("admin"), singleUpload, catchError(addNews));
 router
   .route("/news/:id")
   .get(catchError(fetchSingleNews))
-  .patch(isAuthenticated, restrictedTo(Roles.Admin), catchError(updateNews))
-  .delete(isAuthenticated, restrictedTo(Roles.Admin), catchError(deleteNews));
+  .patch(isAuthenticated, restrictedTo("admin"), singleUpload, catchError(updateNews))
+  .delete(isAuthenticated, restrictedTo("admin"), catchError(deleteNews));
 
 module.exports = router;

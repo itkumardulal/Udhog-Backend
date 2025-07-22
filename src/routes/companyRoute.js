@@ -12,6 +12,7 @@ const {
   restrictedTo,
   Roles,
 } = require("../middleware/isAuthenticated");
+const { multiUpload } = require("../middleware/multerConfig");
 const catchError = require("../util/catchError");
 
 const router = require("express").Router();
@@ -23,7 +24,8 @@ router
   .post(
     isAuthenticated,
     restrictedTo(Roles.Admin),
-    catchError(addCompanyDetails)
+    multiUpload,
+    addCompanyDetails
   );
 
 router.route("/company/search").get(catchError(searchCompanyByName));
@@ -39,7 +41,8 @@ router
   .patch(
     isAuthenticated,
     restrictedTo(Roles.Admin),
-    catchError(updateCompanyDetails)
+    multiUpload, 
+    updateCompanyDetails
   );
 
 module.exports = router;
