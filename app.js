@@ -10,7 +10,7 @@ app.use(express.json());
 const allowedOrigins = [
   "http://localhost:5173", 
   "http://localhost:5174", 
-  "https://udhogwebsite-production.up.railway.app/" ,
+  "https://udhogwebsite-production.up.railway.app" ,
   "https://udhog-admin-client-production.up.railway.app",
   "https://www.sindhulicci.com",
   "https://sindhulicci.com",
