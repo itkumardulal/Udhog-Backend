@@ -1,10 +1,32 @@
 const {isLogin,verifyToken, logout} = require('../controller/authController');
 const { isAuthenticated, restrictedTo, Roles } = require('../middleware/isAuthenticated');
-const loginRateLimiter = require('../middleware/rateLimiter');
+const { loginRateLimiter, resetLoginAttempts } = require('../middleware/rateLimiter');
+
 const catchError = require('../util/catchError')
 
 const router = require('express').Router()
-router.route('/login').post( loginRateLimiter, catchError(isLogin))
+router.post("/login", loginRateLimiter, async (req, res) => {
+  const originalSend = res.send;
+  let statusCode;
+
+  // Wrap res.send to get status code
+  res.send = function (body) {
+    statusCode = res.statusCode;
+    return originalSend.call(this, body);
+  };
+
+  await isLogin(req, res);
+
+  if (res.headersSent) {
+    if (statusCode < 400) {
+      // Success: reset attempts for this email+IP
+      resetLoginAttempts(req.rateLimitData.key);
+    } else {
+      // Failure: increment count for this email+IP
+      req.rateLimitData.data.count++;
+    }
+  }
+});
 router.route("/verify").get(isAuthenticated, restrictedTo(Roles.Admin), catchError(verifyToken));
 router.route('/logout').post(catchError(logout))
 

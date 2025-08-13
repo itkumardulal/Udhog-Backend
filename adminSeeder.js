@@ -14,7 +14,7 @@ const adminSeeder = async (req,res)=>{
             role:'admin',
             username:'admin'
         })
-        console.log('admin credentials seeded sucessfully')
+        console.log('admin credentials seeded successfully')
     }
     else{
         console.log('admin credentials already seeded')
