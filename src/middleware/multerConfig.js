@@ -1,10 +1,19 @@
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
-// Configure storage to temporarily store in /uploads before uploading to R2
+// Define the upload path
+const uploadPath = path.join(__dirname, "..", "..", "uploads");
+
+// Create the folder if it doesn't exist
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
+}
+
+// Configure storage to temporarily store files in /uploads before uploading to R2
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "..", "..", "uploads")); // Create /uploads directory if not exists
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
     const uniqueName = `${Date.now()}-${file.originalname}`;
@@ -12,7 +21,7 @@ const storage = multer.diskStorage({
   },
 });
 
-// Allowed file types (images and pdfs)
+// Allowed file types (images and PDFs)
 const fileFilter = (req, file, cb) => {
   const allowedImageTypes = [
     "image/jpeg",
@@ -30,24 +39,28 @@ const fileFilter = (req, file, cb) => {
     req.uploadType = "pdf";
     cb(null, true);
   } else {
-    cb(new Error("Unsupported file type. Only images and PDFs are allowed."), false);
+    cb(
+      new Error("Unsupported file type. Only images and PDFs are allowed."),
+      false
+    );
   }
 };
 
-
+// Single file upload
 const singleUpload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 10 * 1024 * 1024, // 1MB
+    fileSize: 10 * 1024 * 1024, // 10MB
   },
 }).single("file");
 
+// Multiple files upload
 const multiUpload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 1 * 1024 * 1024, // 1MB
+    fileSize: 10 * 1024 * 1024, // 10MB
   },
 }).fields([
   { name: "photo", maxCount: 1 },
