@@ -8,8 +8,6 @@ app.use(cookieParser());
 
 app.use(express.json());
 const allowedOrigins = [
-  "http://localhost:5173", 
-  "http://localhost:5174", 
   "https://udhogwebsite-production.up.railway.app" ,
   "https://udhog-admin-client-production.up.railway.app",
   "https://www.sindhulicci.com",
@@ -28,7 +26,7 @@ app.use(cors({
   credentials: true,
 }));
 
-// adminSeeder() 
+adminSeeder() 
 
 const authRoute = require("./src/routes/authRoutes");
 const companyRoute = require("./src/routes/companyRoute");
